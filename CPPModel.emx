@@ -247,14 +247,14 @@
         <body>#ifdef TIMESTAMP_LOGGER&#xD;
 RTInjector::getInstance().registerCreateFunction(&quot;/logger:0/logger&quot;,&#xD;
 		[this](RTController * c, RTActorRef * a, int index) {						&#xD;
-			return new TimestampLogger_Actor(LoggerThread, a);&#xD;
+			return new TimestampLogger_Actor(c, a);&#xD;
 		}&#xD;
 );&#xD;
 #endif&#xD;
 #ifdef FAST_PINGER&#xD;
 RTInjector::getInstance().registerCreateFunction(&quot;/pinger&quot;,&#xD;
 		[this](RTController * c, RTActorRef * a, int index) {&#xD;
-			return new FastPinger_Actor(LoggerThread, a);&#xD;
+			return new FastPinger_Actor(c, a);&#xD;
 		}&#xD;
 );&#xD;
 #endif</body>

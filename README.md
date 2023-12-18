@@ -31,7 +31,7 @@ There are different ways how you can implement the dependency injection configur
 
 ## Building the Application
 
-Open the model in Model RealTime and go to **Window - Preferences - RealTime Development - Build/Transformations - C++**. Click the **Workspace** button for the preference `Use build variants for build configuration` and browse to the file `build_variants.js`. Then build the transformation configuration `top.tcjs`.
+Open the model in Model RealTime and go to **Window - Preferences - RealTime Development - Build/Transformations - C++**. Click the **Workspace** button for the preference **Use build variants for build configuration** and browse to the file `build_variants.js`. Then build the transformation configuration `top.tcjs` (you may first have to change to a different target configuration depending on your platform and C++ compiler).
 
 In the Build dialog that appears you can now specify which `Pinger` and which `Logger` implementations to use:
 
@@ -42,7 +42,26 @@ The build variants are implemented by means of two compilation macros:
 * **TIMESTAMP_LOGGER** If set, the `TimestampLogger` capsule will be used instead of the default `NoTimestampLogger`.
 * **FAST_PINGER** If set, the `FastPinger` capsule will be used instead of the default `Pinger`.
 
-Remember that you need to rebuild the application each time you change the build variant configuration.
+The macros are used in the `Top` capsule constructor to configure dependency injection:
+
+```cpp
+#ifdef TIMESTAMP_LOGGER
+RTInjector::getInstance().registerCreateFunction("/logger:0/logger",
+		[this](RTController * c, RTActorRef * a, int index) {						
+			return new TimestampLogger_Actor(c, a);
+		}
+);
+#endif
+#ifdef FAST_PINGER
+RTInjector::getInstance().registerCreateFunction("/pinger",
+		[this](RTController * c, RTActorRef * a, int index) {
+			return new FastPinger_Actor(c, a);
+		}
+);
+#endif
+```
+
+Remember that you need to rebuild the application each time you change the build variant configuration. Do a Clean build to ensure everything gets rebuilt.
 
 ## Running the Application
 

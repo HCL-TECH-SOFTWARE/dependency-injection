@@ -20,15 +20,6 @@ tc.threads = [
     stackSize: '20000',
     priority: 'DEFAULT_TIMER_PRIORITY'
 },
-{
-    name: 'LoggerThread',
-    implClass: 'RTPeerController',
-    stackSize: '20000',
-    priority: 'DEFAULT_MAIN_PRIORITY',
-    logical: [
-        'LoggerThread',
-    ]
-},
 ];
 tc.capsuleFactory = '&CapsuleFactory::factory';
 tc.prerequisites = [
