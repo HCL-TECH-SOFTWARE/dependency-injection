@@ -1,0 +1,41 @@
+let tc = TCF.define(TCF.CPP_TRANSFORM);
+tc.sources = [
+    'platform:/resource/DependencyInjectionExample/CPPModel.emx#_m4DQABJAEey7l9oYHyFR0w',
+];
+tc.createTargetProject = true;
+tc.targetProject = '/DependencyInjectionExample_target';
+tc.compilationMakeType = MakeType.MS_nmake;
+tc.targetConfiguration = 'WinT.x64-VisualC++-17.0';
+tc.topCapsule = 'platform:/resource/DependencyInjectionExample/CPPModel.emx#_r-9fcBJAEey7l9oYHyFR0w';
+tc.threads = [
+{
+    name: 'MainThread',
+    implClass: 'RTPeerController',
+    stackSize: '20000',
+    priority: 'DEFAULT_MAIN_PRIORITY'
+},
+{
+    name: 'TimerThread',
+    implClass: 'RTTimerController',
+    stackSize: '20000',
+    priority: 'DEFAULT_TIMER_PRIORITY'
+},
+{
+    name: 'LoggerThread',
+    implClass: 'RTPeerController',
+    stackSize: '20000',
+    priority: 'DEFAULT_MAIN_PRIORITY',
+    logical: [
+        'LoggerThread',
+    ]
+},
+];
+tc.capsuleFactory = '&CapsuleFactory::factory';
+tc.prerequisites = [
+    
+];
+tc.commonPreface = `
+
+`;
+tc.compilationMakeArguments = '';
+tc.compileArguments = '';

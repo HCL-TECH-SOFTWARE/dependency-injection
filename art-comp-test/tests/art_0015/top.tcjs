@@ -1,3 +1,0 @@
-let tc = TCF.define(TCF.CPP_TRANSFORM);
-tc.topCapsule = "IntTransOutsideState";
-tc.targetFolder = 'art_0015_target';

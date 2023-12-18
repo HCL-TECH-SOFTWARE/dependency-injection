@@ -1,3 +1,0 @@
-let tc = TCF.define(TCF.CPP_TRANSFORM);
-tc.topCapsule = 'TopCap';
-tc.targetFolder = 'rule_config_target'; 

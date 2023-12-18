@@ -1,11 +1,55 @@
-# RTist in Code
+# Dependency Injection
+[Dev Ops Model RealTime](https://www.hcl-software.com/devops-model-realtime) allows you to customize how capsule instances are created in a realtime application by means of dependency injection. This sample application uses build variants as the means for configuring the dependency injection.
 
-RTist in Code lets you create stateful, event-driven realtime applications in C++. It runs as an extension of [Visual Studio Code](https://code.visualstudio.com/) and [Eclipse Theia](https://theia-ide.org/). Learn everything about RTist in Code from its [documentation site](https://opensource.hcltechsw.com/rtist-in-code/).
+## Sample Application
 
-RTist in Code is currently in an open beta phase and you are encouraged to [try it out](#). All feedback is appreciated and can be submitted as Issues in this repo.
+The application consists of a `pinger` which emits 10 `ping` messages at a certain speed, and a `logger` which prints a log message each time it receives one of those `ping` messages. By default the `ping` messages are emitted slowly with 2 seconds between each message, and the log messages just contain a simple "Pinged" message.
 
-As a starting point this repo contains a few [samples](art-samples) that you can use for learning the Art language and RTist in Code.
+Here is the composite structure diagram of the `Top` capsule that shows the simple structure of this application:
 
-See the screen shot below for an overview of what RTist in Code can do.
+![](images/top_structure.png)
 
-![](images/screenshot1.png)
+Assume that we want to configure two things in this simple application:
+1. the speed at which `ping` messages are emitted
+2. whether log messages should contain a timestamp or not
+
+We can implement these variations by means of capsules that inherit from the capsules that implement the default behavior:
+
+![](images/capsule_inheritance.png)
+
+For an optional capsule part we can type it with an abstract capsule, and then at run-time decide which sub capsule to incarnate the part with. The capsule part `logger` in `LogSystem` is such an example. It's typed by `AbstractLogger` and by default it gets incarnated with an instance of the `NoTimestampLogger`. However, by defining another sub capsule `TimestampLogger` we can implement the logging in a different way, including a timestamp for each log message.
+
+For a fixed capsule part we must type it with a concrete capsule, but we can still define a sub capsule with a modified behavior that we can choose to use instead. `Pinger` is such an example, and it has a sub capsule `FastPinger` which emits the `ping` messages at a faster pace (0.5 seconds between each).
+
+## Configuring Dependency Injection
+
+The TargetRTS provides a class `RTInjector` which allows create functions to be registered for a certain capsule part. Whenever a capsule instance is created in a capsule part for which such a create function has been registered, the TargetRTS will call that function to let it create the capsule instance. For all other capsule parts, the default capsule instantiation takes place.
+
+The registration of create functions must happen early, at least before the first capsule instance gets created which we may want to customize by means of dependency injection. In this application we do it in the constructor of the `Top` capsule.
+
+There are different ways how you can implement the dependency injection configuration. In this application we use [Build Variants](https://model-realtime.hcldoc.com/help/topic/com.ibm.xtools.rsarte.webdoc/Articles/Building/Build%20Variants/index.html) which allows us to configure at build-time which capsules to use. If you prefer to configure dependency injection without having to rebuild the application, you can for example use a configuration file instead. Read the configuration file at application start-up and let it decide which create functions to register.
+
+## Building the Application
+
+Open the model in Model RealTime and go to **Window - Preferences - RealTime Development - Build/Transformations - C++**. Click the **Workspace** button for the preference `Use build variants for build configuration` and browse to the file `build_variants.js`. Then build the transformation configuration `top.tcjs`.
+
+In the Build dialog that appears you can now specify which `Pinger` and which `Logger` implementations to use:
+
+![](images/build_variants.png)
+
+The build variants are implemented by means of two compilation macros:
+
+* **TIMESTAMP_LOGGER** If set, the `TimestampLogger` capsule will be used instead of the default `NoTimestampLogger`.
+* **FAST_PINGER** If set, the `FastPinger` capsule will be used instead of the default `Pinger`.
+
+Remember that you need to rebuild the application each time you change the build variant configuration.
+
+## Running the Application
+
+You can either run the application from the transformation configuration context menu (**Run As - RealTime Application**) or from the command-line:
+
+```bash
+<target-folder>/default> executable -URTS_DEBUG=quit
+```
+
+The application prints 10 log messages with 2 or 0.5 seconds interval, either with or without timestamps.
