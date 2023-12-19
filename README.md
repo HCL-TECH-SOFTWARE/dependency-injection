@@ -23,7 +23,7 @@ A fixed capsule part is normally typed with a concrete capsule, but we can still
 
 ## Configuring Dependency Injection
 
-The TargetRTS provides a class `RTInjector` which allows create functions to be registered for capsule parts. Whenever a capsule instance is created in a capsule part for which such a create function has been registered, the TargetRTS will call that function to let it create the capsule instance. For all other capsule parts, the default capsule instantiation takes place.
+The TargetRTS provides a class `RTInjector` which allows create functions to be registered for capsule parts. Whenever a capsule instance is created in a capsule part for which such a create function has been registered, the TargetRTS will call that function to let it create the capsule instance. For all other capsule parts, the default capsule instantiation takes place. In the sample, this logic is implemented in the Artifact `CapsuleFactory` which defines a capsule factory object that is referenced from the TC property `capsuleFactory`.
 
 The registration of create functions must happen early, at least before the first capsule instance gets created which we may want to customize by means of dependency injection. In this application we do it in the constructor of the `Top` capsule.
 
@@ -47,16 +47,16 @@ The macros are used in the `Top` capsule constructor to configure dependency inj
 ```cpp
 #ifdef TIMESTAMP_LOGGER
 RTInjector::getInstance().registerCreateFunction("/logSystem:0/logger",
-		[this](RTController * c, RTActorRef * a, int index) {						
-			return new TimestampLogger_Actor(c, a);
-		}
+	[this](RTController * c, RTActorRef * a, int index) {						
+		return new TimestampLogger_Actor(c, a);
+	}
 );
 #endif
 #ifdef FAST_PINGER
 RTInjector::getInstance().registerCreateFunction("/pinger",
-		[this](RTController * c, RTActorRef * a, int index) {
-			return new FastPinger_Actor(c, a);
-		}
+	[this](RTController * c, RTActorRef * a, int index) {
+		return new FastPinger_Actor(c, a);
+	}
 );
 #endif
 ```
