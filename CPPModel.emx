@@ -216,7 +216,7 @@
           </edges>
         </contents>
       </eAnnotations>
-      <ownedAttribute xmi:id="_J-yTwBJCEey75uiRA-zaUw" name="logger" visibility="protected" type="_GZzywJtMEe6iXMdpBbYmaA" aggregation="composite"/>
+      <ownedAttribute xmi:id="_J-yTwBJCEey75uiRA-zaUw" name="logSystem" visibility="protected" type="_GZzywJtMEe6iXMdpBbYmaA" aggregation="composite"/>
       <ownedAttribute xmi:id="_GE7GQBJCEey75uiRA-zaUw" name="pinger" visibility="protected" type="_GDm3oBJCEey75uiRA-zaUw" aggregation="composite"/>
       <ownedConnector xmi:id="_d7UDUJtOEe6iXMdpBbYmaA" name="PROTO~, PROTO" kind="assembly">
         <end xmi:id="_d7UDUZtOEe6iXMdpBbYmaA" role="_WHCfABJCEey75uiRA-zaUw" partWithPort="_GE7GQBJCEey75uiRA-zaUw"/>
@@ -245,7 +245,7 @@
       <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="__sIzQBU2Eey75uiRA-zaUw" name="TOP" specification="_6fIi4BU2Eey75uiRA-zaUw">
         <language>C++</language>
         <body>#ifdef TIMESTAMP_LOGGER&#xD;
-RTInjector::getInstance().registerCreateFunction(&quot;/logger:0/logger&quot;,&#xD;
+RTInjector::getInstance().registerCreateFunction(&quot;/logSystem:0/logger&quot;,&#xD;
 		[this](RTController * c, RTActorRef * a, int index) {						&#xD;
 			return new TimestampLogger_Actor(c, a);&#xD;
 		}&#xD;
