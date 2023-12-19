@@ -3,7 +3,7 @@
 
 ## Sample Application
 
-The application consists of a `pinger` which emits 10 `ping` messages at a certain speed, and a `logger` which prints a log message each time it receives one of those `ping` messages. By default the `ping` messages are emitted slowly with 2 seconds between each message, and the log messages just contain a simple "Pinged" message.
+The application consists of a `pinger` which emits 10 `ping` messages at a certain speed, and a `logSystem` which prints a log message each time it receives one of those `ping` messages. By default the `ping` messages are emitted slowly with 2 seconds between each message, and the log messages just contain a simple "Pinged" message.
 
 Here is the composite structure diagram of the `Top` capsule that shows the simple structure of this application:
 
@@ -19,11 +19,11 @@ We can implement these variations by means of capsules that inherit from the cap
 
 For an optional capsule part we can type it with an abstract capsule, and then at run-time decide which sub capsule to incarnate the part with. The capsule part `logger` in `LogSystem` is such an example. It's typed by `AbstractLogger` and by default it gets incarnated with an instance of the `NoTimestampLogger`. However, by defining another sub capsule `TimestampLogger` we can implement the logging in a different way, including a timestamp for each log message.
 
-For a fixed capsule part we must type it with a concrete capsule, but we can still define a sub capsule with a modified behavior that we can choose to use instead. `Pinger` is such an example, and it has a sub capsule `FastPinger` which emits the `ping` messages at a faster pace (0.5 seconds between each).
+A fixed capsule part is normally typed with a concrete capsule, but we can still define a sub capsule with a modified behavior that we can choose to use instead. `Pinger` is such an example, and it has a sub capsule `FastPinger` which emits the `ping` messages at a faster pace (0.5 seconds between each).
 
 ## Configuring Dependency Injection
 
-The TargetRTS provides a class `RTInjector` which allows create functions to be registered for a certain capsule part. Whenever a capsule instance is created in a capsule part for which such a create function has been registered, the TargetRTS will call that function to let it create the capsule instance. For all other capsule parts, the default capsule instantiation takes place.
+The TargetRTS provides a class `RTInjector` which allows create functions to be registered for capsule parts. Whenever a capsule instance is created in a capsule part for which such a create function has been registered, the TargetRTS will call that function to let it create the capsule instance. For all other capsule parts, the default capsule instantiation takes place.
 
 The registration of create functions must happen early, at least before the first capsule instance gets created which we may want to customize by means of dependency injection. In this application we do it in the constructor of the `Top` capsule.
 
@@ -46,7 +46,7 @@ The macros are used in the `Top` capsule constructor to configure dependency inj
 
 ```cpp
 #ifdef TIMESTAMP_LOGGER
-RTInjector::getInstance().registerCreateFunction("/logger:0/logger",
+RTInjector::getInstance().registerCreateFunction("/logSystem:0/logger",
 		[this](RTController * c, RTActorRef * a, int index) {						
 			return new TimestampLogger_Actor(c, a);
 		}
@@ -71,4 +71,4 @@ You can either run the application from the transformation configuration context
 <target-folder>/default> executable -URTS_DEBUG=quit
 ```
 
-The application prints 10 log messages with 2 or 0.5 seconds interval, either with or without timestamps.
+The application prints 10 log messages with a 2 or 0.5 seconds interval, either with or without timestamps.
