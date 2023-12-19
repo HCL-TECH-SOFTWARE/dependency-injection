@@ -1,5 +1,5 @@
 # Dependency Injection
-[Dev Ops Model RealTime](https://www.hcl-software.com/devops-model-realtime) allows you to customize how capsule instances are created in a realtime application by means of dependency injection. This sample application uses build variants as the means for configuring the dependency injection.
+[DevOps Model RealTime](https://www.hcl-software.com/devops-model-realtime) allows you to customize how capsule instances are created in a realtime application by means of dependency injection. This sample application uses build variants as the means for configuring the dependency injection.
 
 ## Sample Application
 
